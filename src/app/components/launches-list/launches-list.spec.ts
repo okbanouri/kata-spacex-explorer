@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 
 import { LaunchesListComponent } from './launches-list';
@@ -19,7 +20,7 @@ describe('LaunchesListComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [LaunchesListComponent],
-      providers: [provideMockStore({ initialState: { launch: { ...initialState, launches } } })]
+      providers: [provideRouter([]), provideMockStore({ initialState: { launch: { ...initialState, launches } } })]
     }).compileComponents();
 
     store = TestBed.inject(MockStore);
