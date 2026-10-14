@@ -1,4 +1,4 @@
-import { ApplicationConfig } from '@angular/core';
+import { ApplicationConfig, isDevMode } from '@angular/core';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 
@@ -14,14 +14,11 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes, withComponentInputBinding()),
     provideHttpClient(),
-    
+
     provideStore({ launch: launchReducer }),
-    
+
     provideEffects([LaunchEffects]),
 
-    provideStoreDevtools({
-      maxAge: 25,
-      logOnly: false
-    })
+    isDevMode() ? provideStoreDevtools({ maxAge: 25 }) : []
   ]
 };
