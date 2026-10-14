@@ -1,49 +1,41 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { SpacexService } from '../../services/spacex';
-import { Launch } from '../../models/launch';
-import { Subscription } from 'rxjs';
+import { Store } from '@ngrx/store';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
+import { loadLaunches } from '../../state/launch.actions';
+import { selectAllLaunches, selectError, selectIsLoading } from '../../state/launch.selectors';
+import { filterLaunchesByName } from '../../utils/filter-launches';
 
 
 @Component({
   selector: 'app-launches-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatIconModule, MatChipsModule, MatButtonModule],
+  imports: [CommonModule, FormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatIconModule, MatChipsModule, MatButtonModule, MatProgressSpinnerModule],
   templateUrl: './launches-list.html',
   styleUrl: './launches-list.scss'
 })
 export class LaunchesListComponent implements OnInit {
-  allLaunches: Launch[] = [];
-  filteredLaunches: Launch[] = [];
-  searchTerm: string = '';
-  
-  private sub! : Subscription; 
+  private readonly store = inject(Store);
 
-  constructor(private spacexService: SpacexService) {}
-
+  private readonly launches = this.store.selectSignal(selectAllLaunches);
+  readonly isLoading = this.store.selectSignal(selectIsLoading);
+  readonly error = this.store.selectSignal(selectError);
+  readonly searchTerm = signal('');
+  readonly filteredLaunches = computed(() => filterLaunchesByName(this.launches(), this.searchTerm()));
 
   ngOnInit(): void {
     this.loadLaunches();
   }
 
-  loadLaunches() {
-    this.sub = this.spacexService.getPastLaunches().subscribe(data => {
-      this.allLaunches = data;
-      this.filteredLaunches = data;
-    });
-  }
-
-  onSearchChange() {
-    const term = this.searchTerm.trim().toLowerCase();
-    this.filteredLaunches = this.allLaunches.filter(launch =>
-      launch.mission_name.toLowerCase().includes(term)
-    );
+  loadLaunches(): void {
+    this.store.dispatch(loadLaunches());
   }
 }
