@@ -15,7 +15,8 @@ import { MatInputModule } from '@angular/material/input';
   selector: 'app-launches-list',
   standalone: true,
   imports: [CommonModule, FormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatIconModule, MatChipsModule, MatButtonModule],
-  templateUrl: './launches-list.html'
+  templateUrl: './launches-list.html',
+  styleUrl: './launches-list.scss'
 })
 export class LaunchesListComponent implements OnInit {
   allLaunches: any[] = [];
