@@ -1,14 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
 
 import { LaunchesListComponent } from './launches-list';
+import { loadLaunches } from '../../state/launch.actions';
+import { initialState } from '../../state/launch.reducer';
 import { Launch } from '../../models/launch';
 
 describe('LaunchesListComponent', () => {
   let component: LaunchesListComponent;
   let fixture: ComponentFixture<LaunchesListComponent>;
-  let httpTesting: HttpTestingController;
+  let store: MockStore;
 
   const launches = [
     { flight_number: 1, mission_name: 'FalconSat', links: {} },
@@ -18,33 +19,32 @@ describe('LaunchesListComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [LaunchesListComponent],
-      providers: [provideHttpClient(), provideHttpClientTesting()]
+      providers: [provideMockStore({ initialState: { launch: { ...initialState, launches } } })]
     }).compileComponents();
+
+    store = TestBed.inject(MockStore);
+    vi.spyOn(store, 'dispatch');
 
     fixture = TestBed.createComponent(LaunchesListComponent);
     component = fixture.componentInstance;
-    httpTesting = TestBed.inject(HttpTestingController);
-
     fixture.detectChanges();
-    httpTesting.expectOne('launches.json').flush(launches);
-  });
-
-  afterEach(() => {
-    httpTesting.verify();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should load launches on init', () => {
-    expect(component.filteredLaunches).toEqual(launches);
+  it('should dispatch loadLaunches on init', () => {
+    expect(store.dispatch).toHaveBeenCalledWith(loadLaunches());
   });
 
-  it('should filter launches by mission name, ignoring case', () => {
-    component.searchTerm = 'crew';
-    component.onSearchChange();
+  it('should expose launches from the store', () => {
+    expect(component.filteredLaunches()).toEqual(launches);
+  });
 
-    expect(component.filteredLaunches.map(launch => launch.mission_name)).toEqual(['Crew-1']);
+  it('should filter launches by the search term', () => {
+    component.searchTerm.set('crew');
+
+    expect(component.filteredLaunches().map(launch => launch.mission_name)).toEqual(['Crew-1']);
   });
 });

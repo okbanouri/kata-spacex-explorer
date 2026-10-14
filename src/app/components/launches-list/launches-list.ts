@@ -1,15 +1,17 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { SpacexService } from '../../services/spacex';
-import { Launch } from '../../models/launch';
-import { Subscription } from 'rxjs';
+import { Store } from '@ngrx/store';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+
+import { loadLaunches } from '../../state/launch.actions';
+import { selectAllLaunches } from '../../state/launch.selectors';
+import { filterLaunchesByName } from '../../utils/filter-launches';
 
 
 @Component({
@@ -20,30 +22,13 @@ import { MatInputModule } from '@angular/material/input';
   styleUrl: './launches-list.scss'
 })
 export class LaunchesListComponent implements OnInit {
-  allLaunches: Launch[] = [];
-  filteredLaunches: Launch[] = [];
-  searchTerm: string = '';
-  
-  private sub! : Subscription; 
+  private readonly store = inject(Store);
 
-  constructor(private spacexService: SpacexService) {}
-
+  private readonly launches = this.store.selectSignal(selectAllLaunches);
+  readonly searchTerm = signal('');
+  readonly filteredLaunches = computed(() => filterLaunchesByName(this.launches(), this.searchTerm()));
 
   ngOnInit(): void {
-    this.loadLaunches();
-  }
-
-  loadLaunches() {
-    this.sub = this.spacexService.getPastLaunches().subscribe(data => {
-      this.allLaunches = data;
-      this.filteredLaunches = data;
-    });
-  }
-
-  onSearchChange() {
-    const term = this.searchTerm.trim().toLowerCase();
-    this.filteredLaunches = this.allLaunches.filter(launch =>
-      launch.mission_name.toLowerCase().includes(term)
-    );
+    this.store.dispatch(loadLaunches());
   }
 }

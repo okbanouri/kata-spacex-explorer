@@ -4,18 +4,17 @@
 
   <mat-form-field appearance="outline" class="search-field">
     <mat-label>Search for a mission...</mat-label>
-    <input 
+    <input
       matInput
-      type="text" 
-      [(ngModel)]="searchTerm" 
-      (ngModelChange)="onSearchChange()" 
+      type="text"
+      [(ngModel)]="searchTerm"
       placeholder="Ex. Crew-1"
     />
     <mat-icon matSuffix>search</mat-icon>
   </mat-form-field>
 
   <div class="launches-grid">
-    <mat-card *ngFor="let launch of filteredLaunches" class="launch-card">
+    <mat-card *ngFor="let launch of filteredLaunches()" class="launch-card">
       <mat-card-header>
         <img mat-card-avatar [src]="launch.links.mission_patch_small" alt="Mission's patch">
         <mat-card-title>{{ launch.mission_name }}</mat-card-title>
