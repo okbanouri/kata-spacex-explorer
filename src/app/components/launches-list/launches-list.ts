@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,10 +15,10 @@ import { LaunchCardComponent } from '../launch-card/launch-card';
 
 @Component({
   selector: 'app-launches-list',
-  standalone: true,
   imports: [FormsModule, MatFormFieldModule, MatInputModule, MatIconModule, MatButtonModule, MatProgressSpinnerModule, LaunchCardComponent],
   templateUrl: './launches-list.html',
-  styleUrl: './launches-list.scss'
+  styleUrl: './launches-list.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LaunchesListComponent {
   private readonly store = inject(Store);
