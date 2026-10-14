@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SpacexService } from '../../services/spacex';
+import { Launch } from '../../models/launch';
 import { Subscription } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -15,11 +16,12 @@ import { MatInputModule } from '@angular/material/input';
   selector: 'app-launches-list',
   standalone: true,
   imports: [CommonModule, FormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatIconModule, MatChipsModule, MatButtonModule],
-  templateUrl: './launches-list.html'
+  templateUrl: './launches-list.html',
+  styleUrl: './launches-list.scss'
 })
 export class LaunchesListComponent implements OnInit {
-  allLaunches: any[] = [];
-  filteredLaunches: any[] = [];
+  allLaunches: Launch[] = [];
+  filteredLaunches: Launch[] = [];
   searchTerm: string = '';
   
   private sub! : Subscription; 
@@ -38,9 +40,10 @@ export class LaunchesListComponent implements OnInit {
     });
   }
 
-  onSearchChange() {    
-    this.filteredLaunches = this.allLaunches.filter(launch => 
-      launch.name.includes(this.searchTerm)
+  onSearchChange() {
+    const term = this.searchTerm.trim().toLowerCase();
+    this.filteredLaunches = this.allLaunches.filter(launch =>
+      launch.mission_name.toLowerCase().includes(term)
     );
   }
 }
