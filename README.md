@@ -1,41 +1,36 @@
-# Technical Assessment: Angular & NgRx "SpaceX Explorer" v1.0
+# SpaceX Explorer
 
-Welcome! The goal of this technical assessment is to refactor, debug, and finalize an Angular application built for exploring SpaceX rocket launches. 
+An Angular 21 app to browse past SpaceX launches, see the details of each one and mark favorites. State is handled with NgRx and the UI uses Angular Material.
 
-The application uses **Angular Material** for the UI and **NgRx** for global state management. However, the previous developer rushed the initial implementation. The current codebase contains memory leaks, performance bottlenecks, a critical architectural flaw inside the NgRx Reducer, and missing core async features.
+The original assignment is in [INSTRUCTIONS.md](INSTRUCTIONS.md).
 
+## Running the project
 
-## 🎯 Your Missions
+You need Node 20.19+, 22.12+ or 24+.
 
-1. **Implement the Missing NgRx Effect:**
-   - Currently, the component triggers raw HTTP calls directly via the service. Refactor this logic so the component dispatches a `loadLaunches` action instead.
-   - Create a **NgRx Effect** from scratch to handle the asynchronous stream fetching data from the SpaceX API.
-2. **Feature Development (Details View & Favorites):**
-   - Implement the launch details view, mapped to the `/launch/:id` route.
-   - Leverage the NgRx store to manage the "Favorite" state of a launch. This state must persist seamlessly when navigating back and forth between the list and details views.
-3. **Project configuration :** 
-    - Configure the project to be production ready
+```bash
+npm ci          # install dependencies
+npm start       # dev server on http://localhost:4200
+npm test        # unit tests
+npm run build   # production build in dist/
+```
 
-## 🛠️ Technical Specifications
+## What I did
 
-> ⚠️ **Note:** The SpaceX public API is temporarily unavailable. The application is currently using local mock data instead. The endpoints below are the ones that should normally be used — implement your solution as if the API were live (the service layer is already wired to the mock data for you).
+- **NgRx effect:** the list no longer calls the service. Launches are loaded once when the app starts through an effect, and the pages only read from the store.
+- **Details page:** available on `/launch/:id`. It also works when opening the URL directly.
+- **Favorites:** kept in the store, so they stay the same when going back and forth between the list and the details.
+- **Production setup:** lazy loaded routes (the initial bundle went from 560 kB to 320 kB), OnPush everywhere, store devtools only in dev mode, global error listeners.
 
-- **List Endpoint:** ~~`https://api.spacexdata.com/v4/launches/past`~~ → `launches.json` (local mock)
-- **Details Endpoint:** ~~`https://api.spacexdata.com/v4/launches/{id}`~~ → filtered from `launches.json` (local mock)
-- Angular Material is pre-installed. Baseline layouts and grid styling can be found in the component's SCSS file.
+## Issues I found in the original code
 
-## 📋 Evaluation Criteria
-- **Clean Architecture:** Proper separation of concerns (Smart vs. Presentational components, encapsulating logic away from templates).
-- **RxJS & NgRx Mastery:** Clean stream manipulation, avoiding nesting subscriptions, keeping the state strictly immutable, and leveraging memoized selectors.
-- **Modern Angular Standards:** Proper usage of Standalone components and modern control flow (or Signals if you choose to introduce them).
-- **TypeScript Rigor:** Explicit interface definitions for API payloads. The use of `any` is strictly prohibited.
-- **Git Hygiene:** Clean, atomic, and descriptive commit history.
+- The code used `id`, `name` and `success`, which don't exist in the JSON. The search crashed and every launch showed "Failure". There is no `id`, so the details route uses `flight_number`.
+- The list stylesheet was never linked.
+- The status chip colors didn't work with Material 3.
+- `any` everywhere and the tests didn't compile.
 
-## Bonus
-- Setup a docker production ready for this app
+## Some choices
 
-## 📦 Submission Guidelines
-1. Push your code to a public GitHub repository.
-2. Create a new `README.md` and ensure it includes straightforward instructions to install and run the project locally 
-
-Good luck! We look forward to reviewing your code.
+- The search term is kept in a signal inside the list component, it's only UI state. The filtered list is a `computed()` that calls a pure function. Memoized selectors are used for the shared data (launches by flight number, favorites).
+- Favorites survive navigation but not a page reload. Saving them in localStorage would be easy to add if needed.
+- The API URL is not configurable because the app reads a local mock. With the real API I would add environment files for it.
