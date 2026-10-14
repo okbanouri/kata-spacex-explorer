@@ -15,6 +15,15 @@ npm test        # unit tests
 npm run build   # production build in dist/
 ```
 
+### With Docker
+
+```bash
+docker build -t spacex-explorer .
+docker run --rm -p 8080:80 spacex-explorer
+```
+
+Then open http://localhost:8080. The image builds the app with Node and serves it with nginx.
+
 ## What I did
 
 - **NgRx effect:** the list no longer calls the service. Launches are loaded once when the app starts through an effect, and the pages only read from the store.
