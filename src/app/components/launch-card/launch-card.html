@@ -18,5 +18,15 @@
         {{ launch().launch_success ? 'Success' : 'Failure' }}
       </mat-chip>
     </mat-chip-set>
+
+    <button
+      mat-icon-button
+      type="button"
+      [attr.aria-label]="isFavorite() ? 'Remove from favorites' : 'Add to favorites'"
+      [attr.aria-pressed]="isFavorite()"
+      (click)="favoriteToggled.emit()"
+    >
+      <mat-icon class="favorite-icon">{{ isFavorite() ? 'star' : 'star_border' }}</mat-icon>
+    </button>
   </mat-card-actions>
 </mat-card>

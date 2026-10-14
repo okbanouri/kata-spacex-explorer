@@ -7,8 +7,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
-import { loadLaunches } from '../../state/launch.actions';
-import { selectAllLaunches, selectError, selectIsLoading } from '../../state/launch.selectors';
+import { loadLaunches, toggleFavorite } from '../../state/launch.actions';
+import { selectAllLaunches, selectError, selectFavoriteIdSet, selectIsLoading } from '../../state/launch.selectors';
 import { filterLaunchesByName } from '../../utils/filter-launches';
 import { LaunchCardComponent } from '../launch-card/launch-card';
 
@@ -26,6 +26,7 @@ export class LaunchesListComponent implements OnInit {
   private readonly launches = this.store.selectSignal(selectAllLaunches);
   readonly isLoading = this.store.selectSignal(selectIsLoading);
   readonly error = this.store.selectSignal(selectError);
+  readonly favoriteIds = this.store.selectSignal(selectFavoriteIdSet);
   readonly searchTerm = signal('');
   readonly filteredLaunches = computed(() => filterLaunchesByName(this.launches(), this.searchTerm()));
 
@@ -35,5 +36,9 @@ export class LaunchesListComponent implements OnInit {
 
   loadLaunches(): void {
     this.store.dispatch(loadLaunches());
+  }
+
+  toggleFavorite(flightNumber: number): void {
+    this.store.dispatch(toggleFavorite({ flightNumber }));
   }
 }

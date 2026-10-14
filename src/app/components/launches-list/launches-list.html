@@ -27,7 +27,11 @@
   } @else {
     <div class="launches-grid">
       @for (launch of filteredLaunches(); track launch.flight_number) {
-        <app-launch-card [launch]="launch" />
+        <app-launch-card
+          [launch]="launch"
+          [isFavorite]="favoriteIds().has(launch.flight_number)"
+          (favoriteToggled)="toggleFavorite(launch.flight_number)"
+        />
       }
     </div>
   }
