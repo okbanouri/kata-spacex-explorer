@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,7 +20,7 @@ import { LaunchCardComponent } from '../launch-card/launch-card';
   templateUrl: './launches-list.html',
   styleUrl: './launches-list.scss'
 })
-export class LaunchesListComponent implements OnInit {
+export class LaunchesListComponent {
   private readonly store = inject(Store);
 
   private readonly launches = this.store.selectSignal(selectAllLaunches);
@@ -29,10 +29,6 @@ export class LaunchesListComponent implements OnInit {
   readonly favoriteIds = this.store.selectSignal(selectFavoriteIdSet);
   readonly searchTerm = signal('');
   readonly filteredLaunches = computed(() => filterLaunchesByName(this.launches(), this.searchTerm()));
-
-  ngOnInit(): void {
-    this.loadLaunches();
-  }
 
   loadLaunches(): void {
     this.store.dispatch(loadLaunches());

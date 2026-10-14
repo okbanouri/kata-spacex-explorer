@@ -34,10 +34,6 @@ describe('LaunchesListComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should dispatch loadLaunches on init', () => {
-    expect(store.dispatch).toHaveBeenCalledWith(loadLaunches());
-  });
-
   it('should expose launches from the store', () => {
     expect(component.filteredLaunches()).toEqual(launches);
   });
@@ -63,6 +59,6 @@ describe('LaunchesListComponent', () => {
     expect(alert.textContent).toContain('Server Error');
 
     alert.querySelector('button')!.click();
-    expect(store.dispatch).toHaveBeenCalledTimes(2);
+    expect(store.dispatch).toHaveBeenCalledWith(loadLaunches());
   });
 });
