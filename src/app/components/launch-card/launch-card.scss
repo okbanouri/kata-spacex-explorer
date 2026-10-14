@@ -1,3 +1,5 @@
+@use '@angular/material' as mat;
+
 :host {
   display: block;
 }
@@ -40,13 +42,18 @@
   padding: 8px 16px;
 }
 
-
 .status-success {
-  background-color: #e2fbe8;
-  color: #1e7e34;
+  @include mat.chips-overrides((
+    elevated-container-color: #e2fbe8,
+    label-text-color: #1e7e34,
+    outline-color: #1e7e34,
+  ));
 }
 
 .status-error {
-  background-color: #fde8e8;
-  color: #c82333;
+  @include mat.chips-overrides((
+    elevated-container-color: #fde8e8,
+    label-text-color: #c82333,
+    outline-color: #c82333,
+  ));
 }
