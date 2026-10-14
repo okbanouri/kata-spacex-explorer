@@ -1,0 +1,72 @@
+@use '@angular/material' as mat;
+
+:host {
+  display: block;
+}
+
+.launch-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.launch-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.card-content {
+  padding-top: 16px;
+}
+
+.date-text {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.date-text mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.card-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+}
+
+.title-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.title-link:hover {
+  text-decoration: underline;
+}
+
+.favorite-icon {
+  color: #f59e0b;
+}
+
+.status-success {
+  @include mat.chips-overrides((
+    elevated-container-color: #e2fbe8,
+    label-text-color: #1e7e34,
+    outline-color: #1e7e34,
+  ));
+}
+
+.status-error {
+  @include mat.chips-overrides((
+    elevated-container-color: #fde8e8,
+    label-text-color: #c82333,
+    outline-color: #c82333,
+  ));
+}
