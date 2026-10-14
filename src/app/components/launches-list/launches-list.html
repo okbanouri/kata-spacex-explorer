@@ -25,29 +25,10 @@
   } @else if (filteredLaunches().length === 0) {
     <p class="state-message">No missions match "{{ searchTerm() }}".</p>
   } @else {
-  <div class="launches-grid">
-    <mat-card *ngFor="let launch of filteredLaunches()" class="launch-card">
-      <mat-card-header>
-        <img mat-card-avatar [src]="launch.links.mission_patch_small" alt="Mission's patch">
-        <mat-card-title>{{ launch.mission_name }}</mat-card-title>
-        <mat-card-subtitle>Flight n°{{ launch.flight_number }}</mat-card-subtitle>
-      </mat-card-header>
-
-      <mat-card-content class="card-content">
-        <p class="date-text">
-          <mat-icon>calendar_today</mat-icon>
-          {{ launch.launch_date_local | date:'dd/MM/yyyy' }}
-        </p>
-      </mat-card-content>
-
-      <mat-card-actions class="card-actions">
-        <mat-chip-set>
-          <mat-chip [class.status-success]="launch.launch_success" [class.status-error]="!launch.launch_success">
-            {{ launch.launch_success ? 'Success' : 'Failure' }}
-          </mat-chip>
-        </mat-chip-set>
-      </mat-card-actions>
-    </mat-card>
-  </div>
+    <div class="launches-grid">
+      @for (launch of filteredLaunches(); track launch.flight_number) {
+        <app-launch-card [launch]="launch" />
+      }
+    </div>
   }
 </div>

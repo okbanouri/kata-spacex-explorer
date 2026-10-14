@@ -1,0 +1,52 @@
+:host {
+  display: block;
+}
+
+.launch-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.launch-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.card-content {
+  padding-top: 16px;
+}
+
+.date-text {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.date-text mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.card-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+}
+
+
+.status-success {
+  background-color: #e2fbe8;
+  color: #1e7e34;
+}
+
+.status-error {
+  background-color: #fde8e8;
+  color: #c82333;
+}
