@@ -47,4 +47,22 @@ describe('LaunchesListComponent', () => {
 
     expect(component.filteredLaunches().map(launch => launch.mission_name)).toEqual(['Crew-1']);
   });
+
+  it('should show a spinner while loading', () => {
+    store.setState({ launch: { ...initialState, loading: true } });
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('mat-spinner')).not.toBeNull();
+  });
+
+  it('should show the error and retry on click', () => {
+    store.setState({ launch: { ...initialState, error: 'Server Error' } });
+    fixture.detectChanges();
+
+    const alert: HTMLElement = fixture.nativeElement.querySelector('[role="alert"]');
+    expect(alert.textContent).toContain('Server Error');
+
+    alert.querySelector('button')!.click();
+    expect(store.dispatch).toHaveBeenCalledTimes(2);
+  });
 });

@@ -13,6 +13,18 @@
     <mat-icon matSuffix>search</mat-icon>
   </mat-form-field>
 
+  @if (isLoading()) {
+    <div class="state-message">
+      <mat-spinner diameter="48" />
+    </div>
+  } @else if (error(); as errorMessage) {
+    <div class="state-message" role="alert">
+      <p>Could not load launches: {{ errorMessage }}</p>
+      <button mat-flat-button (click)="loadLaunches()">Retry</button>
+    </div>
+  } @else if (filteredLaunches().length === 0) {
+    <p class="state-message">No missions match "{{ searchTerm() }}".</p>
+  } @else {
   <div class="launches-grid">
     <mat-card *ngFor="let launch of filteredLaunches()" class="launch-card">
       <mat-card-header>
@@ -37,4 +49,5 @@
       </mat-card-actions>
     </mat-card>
   </div>
+  }
 </div>
